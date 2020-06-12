@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="keywords" content="Gridea静态个人博客">
+<meta name="description" content="精其所以">
+<meta name="theme-color" content="#000">
+<title>Ubuntu修改屏幕分辨率 | Jeffrey X.L. Chan</title>
+<link rel="shortcut icon" href="/favicon.ico?v=1591934737359">
+<link rel="stylesheet" href="/styles/main.css">
+<link rel="stylesheet" href="/media/css/mist.css">
+
+<link rel="stylesheet" href="/media/fonts/font-awesome.css">
+<link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Rosario:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+<link href="/media/hljs/styles/androidstudio.css" rel="stylesheet">  
+
+<script src="/media/hljs/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.0/velocity.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.0/velocity.ui.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+
+
+
+    <meta name="description" content="Ubuntu修改屏幕分辨率" />
+    <meta name="keywords" content="平台搭建" />
+  </head>
+  <body>
+    <div class="head-top-line"></div>
+    <div class="header-box">
+      
+<div class=" mist">
+  <header class="header bg-color ">
+    <div class="blog-header box-shadow-wrapper  " id="header">
+      <div class="nav-toggle" id="nav_toggle">
+        <div class="toggle-box">
+          <div class="line line-top"></div>
+          <div class="line line-center"></div>
+          <div class="line line-bottom"></div>
+        </div>
+      </div>
+      <div class="site-meta">       
+        <div class="site-title">
+          
+            <a href="/" class="">
+              <span class="logo-line-before">
+                <i class=""></i>
+              </span>
+              <span class="main-title">Jeffrey X.L. Chan</span>
+              <span class="logo-line-after">
+                <i class=""></i>
+              </span>
+            </a>  
+          
+        </div>
+        
+      </div>
+      <nav class="site-nav" id="site_nav">
+        <ul id="nav_ul">
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://drxlchan.github.io" target="_self">
+                  <i class="fa fa-globe"></i> 首页
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://drxlchan.github.io/archives" target="_self">
+                  <i class="fa fa-globe"></i> 归档
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://drxlchan.github.io/tags" target="_self">
+                  <i class="fa fa-globe"></i> 标签
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://drxlchan.github.io/about" target="_self">
+                  <i class="fa fa-globe"></i> 关于
+                </a>
+              
+            </li>
+          
+          
+            
+              <li class="nav-item ">
+                <a href="/friends" target="_self">
+                  
+                    fa-ship友情链接
+                  
+                </a>
+              </li>
+            
+          
+        </ul>
+      </nav>
+    </div>
+  </header>
+</div>
+
+<script type="text/javascript"> 
+ 
+  let showNav = true;
+
+  let navToggle = document.querySelector('#nav_toggle'),
+  siteNav = document.querySelector('#site_nav');
+  
+  function navClick() {
+    let sideBar = document.querySelector('.sidebar');
+    let navUl = document.querySelector('#nav_ul');
+    navToggle.classList.toggle('nav-toggle-active');
+    siteNav.classList.toggle('nav-menu-active');
+    if (siteNav.classList.contains('nav-menu-active')) {
+      siteNav.style = "height: " + (navUl.children.length * 42) +"px !important";
+    } else {
+      siteNav.style = "";
+    }
+  }
+
+  navToggle.addEventListener('click',navClick);  
+</script>
+    </div>
+    <div class="main-continer">
+      
+      <div class="section-layout mist bg-color">
+        <div class="section-layout-wrapper">
+          
+
+<div class="sidebar">
+  
+    <div class="sidebar-box box-shadow-wrapper  right-motion" id="sidebar">
+      
+      <div class="sidebar-body mist" id="sidebar_body">
+        
+          
+            <div style="opacity: 1;">
+              <div class="toc-box right-motion">
+  <div class="toc-wrapper auto-number auto" id="toc_wrapper">
+    <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#ubuntu%E4%B8%8B%E9%80%9A%E8%BF%87xrandr%E5%92%8Ccvt%E5%91%BD%E4%BB%A4%E4%BF%AE%E6%94%B9%E5%B1%8F%E5%B9%95%E5%88%86%E8%BE%A8%E7%8E%87">Ubuntu下通过xrandr和cvt命令修改屏幕分辨率</a></li>
+<li><a href="#use-fake-screen-to-get-videos">Use fake screen to get videos</a></li>
+<li><a href="#use-anydesk">Use AnyDesk</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script>
+
+let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1; 
+let active = 'active-show', activeClass = 'active-current';
+let tocWrapper = document.querySelector('#toc_wrapper');
+let tocContent = tocWrapper.children[0];
+let autoNumber = tocWrapper&&tocWrapper.classList.contains('auto-number');
+
+function addTocNumber(elem, deep) {
+  if (!elem) {
+    return;
+  }
+  let prop = elem.__proto__;
+
+  if (prop === HTMLUListElement.prototype) {
+    for (let i = 0; i < elem.children.length; i++) {
+      addTocNumber(elem.children[i], deep + (i + 1) + '.');
+    }
+  } else if (prop === HTMLLIElement.prototype) {
+    // 保存li元素
+    if (elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
+      lList.push(elem);
+    }
+    for (let i = 0; i < elem.children.length; i++) {
+      let cur = elem.children[i];
+      if (cur.__proto__ === HTMLAnchorElement.prototype) {
+        if (autoNumber) {
+          cur.text =  deep + ' ' + cur.text;
+        }
+      } else if (cur.__proto__ === HTMLUListElement.prototype) {
+        addTocNumber(cur, deep);
+      }
+    }
+  }
+}
+
+function removeParentActiveClass() {
+  let parents = tocContent.querySelectorAll('.'+active)
+  parents.forEach(function(elem) {
+    elem.classList.remove(active);
+  });
+}
+
+function addActiveClass(index) {
+  if (index >= 0 && index < hList.length) {
+    lList[index].classList.add(activeClass);
+  }
+}
+
+function removeActiveClass(index) {
+  if (index >= 0 && index < hList.length) {
+    lList[index].classList.remove(activeClass);
+  }
+}
+
+function addActiveLiElemment(elem, parent) {
+  if (!elem || elem === parent) {
+    return;
+  } else {
+    if (elem.__proto__ === HTMLLIElement.prototype) {
+      elem.classList.add(active);
+    }
+    addActiveLiElemment(elem.parentElement, parent);
+  }
+}
+
+function showToc() {
+  if (tocWrapper) {
+    postBody = document.querySelector('#post_body');
+    for (let i = 0; i < postBody.children.length; i++) {
+      if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
+        hList.push(postBody.children[i]);
+      }
+    }
+    if (tocWrapper.classList.contains('compress')) {
+        tocContent.classList.add('closed');
+    } else if (tocWrapper.classList.contains('no_compress')){
+      tocContent.classList.add('expanded');
+    } else {
+      if (hList.length > 10) {
+        active = 'active-hidden'
+        tocContent.classList.add('closed');
+      } else {
+        tocContent.classList.add('expanded');
+      }
+    }
+  }
+}
+
+(function() {
+  // 处理不是从#一级标题开始目录
+  if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
+    let con = tocContent.children[0].children[0];
+    tocContent.innerHTML = con.innerHTML;
+  }
+  let markdownItTOC = document.querySelector('.markdownIt-TOC');
+  let innerHeight = window.innerHeight;
+  markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
+  addTocNumber(tocContent, '');
+})();
+
+document.addEventListener('scroll', function(e) {
+  if (lList.length <= 0) {
+    return;
+  }
+  let scrollTop = document.scrollingElement.scrollTop + 10;
+  let dir;
+
+  if (lastTop - scrollTop > 0) {
+    dir = 'up';
+  } else {
+    dir = 'down';
+  }
+
+  lastTop = scrollTop;
+  if (scrollTop <= 0) {
+    if (lastIndex >= 0 && lastIndex < hList.length) {
+      lList[lastIndex].classList.remove(activeClass);
+    }
+    return;
+  }
+
+  let current = 0, hasFind = false;
+  for (let i = 0; i < hList.length; i++) {
+    if (hList[i].offsetTop > scrollTop) {
+      current = i;
+      hasFind = true;
+      break;
+    }
+  }
+  if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
+    current = hList.length - 1;
+  } else {
+    current--;
+  }
+  if (dir === 'down') {
+    if (current > lastIndex) {
+      addActiveClass(current);
+      removeActiveClass(lastIndex) 
+      lastIndex = current;
+      removeParentActiveClass();
+      lList[current] && addActiveLiElemment(lList[current].parentElement,tocContent);
+    }
+  } else {
+    if (current < lastIndex) {
+      addActiveClass(current);
+      removeActiveClass(lastIndex);
+      lastIndex = current;
+      removeParentActiveClass();
+      lList[current] && addActiveLiElemment(lList[current].parentElement,tocContent);
+    }
+  }
+});
+
+window.addEventListener('load', function() {
+  showToc();
+  document.querySelector('#sidebar').style='display: block;';
+  tocWrapper.classList.add('toc-active');
+  setTimeout(function() {
+    if ("createEvent" in document) {
+      let evt = document.createEvent("HTMLEvents");
+      evt.initEvent("scroll", false, true);
+      document.dispatchEvent(evt);
+    }
+    else {
+      document.fireEvent("scroll");
+    }
+  }, 500)
+})
+
+</script>
+            </div>
+          
+        
+      </div>
+    </div>
+  
+</div>
+<script>
+  const SIDEBAR_TITLE_ACTIVE = 'sidebar-title-active';
+  const SIDEBAR_BODY_ACTIVE = 'sidebar-body-active';
+  const SLIDE_UP_IN = 'slide-up-in';
+
+  let sidebar = document.querySelector('#sidebar'),
+  tocSideBar = document.querySelector('#tocSideBar'),
+  metaSideBar = document.querySelector('#metaSideBar'),
+  postToc = document.querySelector('#post_toc'),
+  postSiteMeta = document.querySelector('#post_side_meta'),
+  sidebarTitle = document.querySelector('.sidebar-title'),
+  sidebarBody = document.querySelector('#sidebar_body');
+
+  tocSideBar && tocSideBar.addEventListener('click', (e) => {
+    toggleSidebar(e);
+  });
+
+  metaSideBar && metaSideBar.addEventListener('click', (e) => {
+    toggleSidebar(e);
+  });
+
+  function toggleSidebar(e) {
+    let currentTitle = document.querySelector("."+SIDEBAR_TITLE_ACTIVE);
+    if (currentTitle == e.srcElement) {
+      return ;
+    }
+    let current, showElement, hideElement;
+    if (e.srcElement == metaSideBar) {
+      showElement = postSiteMeta;
+      hideElement = postToc;
+    } else if (e.srcElement == tocSideBar){
+      showElement = postToc;
+      hideElement = postSiteMeta;
+    }
+    currentTitle.classList.remove(SIDEBAR_TITLE_ACTIVE);
+    e.srcElement.classList.add(SIDEBAR_TITLE_ACTIVE);
+
+    window.Velocity(hideElement, 'stop');
+    window.Velocity(hideElement, 'transition.slideUpOut', {
+      display: 'none',
+      duration: 200,
+      complete: function () {
+        window.Velocity(showElement, 'transition.slideDownIn', {
+          duration: 200
+        });
+      }
+    })
+    hideElement.classList.remove(SIDEBAR_BODY_ACTIVE);
+    showElement.classList.add(SIDEBAR_BODY_ACTIVE);
+  }
+
+  postToc && postToc.addEventListener('transitionend', function() {
+    this.classList.remove(SLIDE_UP_IN);
+  });
+
+  if (sidebarBody) {
+    if (sidebarBody.classList.contains('pisces') || sidebarBody.classList.contains('gemini')) {
+      let hasFix = false;
+      let scrollEl = document.querySelector('.main-continer');
+      let limitTop = document.querySelector('#nav_ul').children.length * 42 + 162;
+      window.addEventListener('scroll', function(e) {
+        if (document.scrollingElement.scrollTop >= limitTop) {
+          if (!hasFix) {
+            sidebar.classList.add('sidebar-fixed');
+            hasFix = true;
+          }
+        } else {
+          if (hasFix) {
+            sidebar.classList.remove('sidebar-fixed');
+            hasFix = false;
+          }
+        }
+      });
+    }
+  }
+  
+</script>
+          <div class="section-box box-shadow-wrapper">
+            <div class="section bg-color post post-page">
+              <header class="post-header">
+  <h1 class="post-title">
+    <a class="post-title-link" href="https://drxlchan.github.io/LMqad0C__/">
+      Ubuntu修改屏幕分辨率
+    </a>
+  </h1>
+  <div class="post-meta">
+    
+    <span class="meta-item pc-show">
+      <i class="fa fa-calendar-o"></i>
+      <span>发布于</span>
+      <span>2020-04-07</span>
+      <span class="post-meta-divider pc-show">|</span>
+    </span>
+    
+      <span class="meta-item">
+        <i class="fa fa-folder-o"></i>
+        <span class="pc-show">分类于</span>
+        
+          
+            <a href="https://drxlchan.github.io/yE-Vsna4c/">
+              <span>平台搭建</span>
+            </a>
+          
+        
+      </span>
+      <span class="post-meta-divider">|</span>
+    
+    <span class="meta-item">
+      <i class="fa fa-clock-o"></i>
+      <span>5分钟</span>
+    </span>
+    <span class="meta-item">
+      <span class="post-meta-divider">|</span>
+      <i class="fa fa-file-word-o"></i>
+      <span>954<span class="pc-show">字数</span></span>
+    </span>
+    
+  </div>
+</header>
+              <div class="post-body next-md-body" id="post_body">
+                <p>系统：Ubuntu 16.04 64bit openstack创建的实例</p>
+<h2 id="ubuntu下通过xrandr和cvt命令修改屏幕分辨率">Ubuntu下通过xrandr和cvt命令修改屏幕分辨率</h2>
+<p>命令工具：xrandr cvt</p>
+<ol>
+<li>
+<p>用cvt增加一个新的分辨率，下面是创建一个1680x1050，刷新频率为60Hz的分辨率。</p>
+<pre><code class="language-shell">cvt 1680 1050
+</code></pre>
+<p>结果如下：</p>
+<pre><code class="language-powershell">ubuntu@host-192-168-96-5:~$ cvt 1680 1050
+# 1680x1050 59.95 Hz (CVT 1.76MA) hsync: 65.29 kHz; pclk: 146.25 MHz
+Modeline &quot;1680x1050_60.00&quot;  146.25  1680 1784 1960 2240  1050 1053 1059 1089 -hsync +vsync
+</code></pre>
+</li>
+<li>
+<p>用xrandr查看当前分辨率。</p>
+<figure data-type="image" tabindex="1"><img src="http://raw.githubusercontent.com/Jeffrey28/Figurebed/master/img/20200407220014.png" alt="" loading="lazy"></figure>
+</li>
+<li>
+<p>新建分辨率</p>
+<pre><code class="language-powershell">sudo xrandr --newmode &quot;1680x1050_60.00&quot;  146.25  1680 1784 1960 2240  1050 1053 1059 1089 -hsync +vsync
+</code></pre>
+<p>上述参数与步骤1中的modeline的结果一致</p>
+</li>
+<li>
+<p>添加新建分辨率到显示器（此处是VGA-1）</p>
+<pre><code class="language-powershell">sudo xrandr --addmode VGA-1 &quot;1680x1050_60.00&quot;
+</code></pre>
+</li>
+<li>
+<p>设置显示器的分辨率有两种方法</p>
+<ul>
+<li>system setting中的display设置</li>
+<li>命令行xrandr -s 1680x1050</li>
+</ul>
+</li>
+<li>
+<p>不过顺利的话就完成了，但是往往会出现意外，无法设置成功。此时需要手动设置：</p>
+<pre><code class="language-powershell">xrandr --output VGA-1 --mode &quot;1680x1050_60.00&quot;
+</code></pre>
+</li>
+<li>
+<p>保存分辨率，开机自启的方法：</p>
+<p>将可以把这个流程，其实也就<code>newmode addmode output</code>三步，做成脚本，开机启动。</p>
+<p>具体方法为：编辑vim etc/profile，在末尾增加：</p>
+<pre><code class="language-powershell">xrandr --newmode &quot;1680x1050_60.00&quot;  146.25  1680 1784 1960 2240  1050 1053 1059 1089 -hsync +vsync
+xrandr --addmode VGA-1 &quot;1680x1050_60.00&quot;
+xrandr --output VGA-1 --mode &quot;1680x1050_60.00&quot;
+</code></pre>
+<p>立马启用修改后的配置：</p>
+<pre><code class="language-powershell">source /etc/profile
+</code></pre>
+</li>
+<li>
+<p>存在问题：</p>
+<ul>
+<li>openstack平台不支持更换较高的分辨率，所以就会造成开机的时候又会恢复成原来的分辨率。不过可以通过在teamviewer上面再输出一次output命令，但是会造成openstack的实例卡住。</li>
+<li>如果想要恢复openstack的界面，要么重启，要么更改成更低的分辨率</li>
+<li>但是千万不要直接在system settings上设置成高分辨率的，会造成错误，两边都卡死。设置成低分辨率的没有问题，反正要是要设置成高分辨的就是用output命令。</li>
+<li>有时候会造成改不成高分辨的情况，那么此时的操作步骤是，先在displays上选择高分辨率的，此时会卡住，然后把拷贝的output命令在连接teamviewer的终端上输入。</li>
+<li>[开机后]先登录openstack，能够进入系统后，然后再登录teamviewer连接。</li>
+<li>[更改到更高的分辨率]在teamviewer上输入一遍xrandr --output命令，此时有可能会改不了，那么可以通过修改teamviewer的view上的分辨率，然后再xrandr --output 【问题】软件无法全屏【解决】利用xrandr -s 1680x1050_60.00</li>
+<li>[降低到较低的分辨率]xrandr --output VGA-1 --mode &quot;1280x1024&quot;</li>
+</ul>
+</li>
+</ol>
+<h2 id="use-fake-screen-to-get-videos">Use fake screen to get videos</h2>
+<p>Because remote server has no display device, we can't see the training process and save videos.<br>
+So we will use the following method to get the remote screen.</p>
+<ul>
+<li>Change GPU fan setting</li>
+</ul>
+<pre><code>sudo nvidia-xconfig -a --cool-bits=4
+</code></pre>
+<ul>
+<li>Download the file <a href="https://1drv.ms/u/s!AiF_YAjgP2iqmUKHkH7t8lzlz9aO">dfp-edid.bin</a> &amp; move it to <code>/etc/</code></li>
+<li>Open xorg.conf</li>
+</ul>
+<pre><code>sudo vim /etc/X11/xorg.conf
+</code></pre>
+<ul>
+<li>Insert the following three lines in each Section &quot;Screen&quot;:</li>
+</ul>
+<figure data-type="image" tabindex="2"><a href="https://github.com/2017-fall-DL-training-program/Setup_tutorial/blob/master/img/screen.png"><img src="https://github.com/2017-fall-DL-training-program/Setup_tutorial/raw/master/img/screen.png" alt="screen" loading="lazy"></a></figure>
+<pre><code>Option      &quot;UseDisplayDevice&quot; &quot;DFP-0&quot;
+Option      &quot;ConnectedMonitor&quot; &quot;DFP-0&quot;
+Option      &quot;CustomEDID&quot; &quot;DFP-0:/etc/dfp-edid.bin&quot;
+</code></pre>
+<ul>
+<li>Restart X server(ex. lightdm)</li>
+</ul>
+<pre><code>sudo service lightdm restart
+</code></pre>
+<ul>
+<li>Auto login setting</li>
+</ul>
+<p>bulid(or modify) file <code>vim /etc/lightdm/lightdm.conf</code><br>
+write the following lines:</p>
+<pre><code>[Seat:*]
+autologin-guest=false
+autologin-user=username
+autologin-user-timeout=0
+</code></pre>
+<p>then restart X server again. <code>sudo service lightdm restart</code></p>
+<ul>
+<li>
+<p>Install anydesk</p>
+<ul>
+<li>
+<p>Download &amp; upload to your server(via sftp, scp or using wget etc.)</p>
+</li>
+<li>
+<p>Install deb: <code>sudo dpkg -i anydesk.XXX.deb</code></p>
+</li>
+<li>
+<p>Set password:</p>
+<pre><code>anydesk --set-password
+</code></pre>
+<ul>
+<li>e.g.<code>echo lovefm26671 | anydesk --with-password</code></li>
+</ul>
+</li>
+<li>
+<p>run anydesk <code>anydesk</code></p>
+</li>
+<li>
+<p>Get ID: <code>anydesk --get-id</code></p>
+</li>
+<li>
+<p>(optinal) if it still doesn't work, try to use cmd <code>export DISPLAY=:0</code></p>
+</li>
+<li>
+<p>see <a href="http://support.anydesk.com/knowledgebase/articles/441867-command-line-interface">Command Line Interface</a> for more details.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="use-anydesk">Use AnyDesk</h2>
+<ul>
+<li>Download AnyDesk from <a href="https://anydesk.com/platforms">official website</a>, windowsx64 version in this tutorial.</li>
+<li>Double click to run the application(no need to install).</li>
+<li>Enter the ID we got from remote server.</li>
+<li>Enter the password.</li>
+<li>Then,you can see the remote desktop, enjoy it!</li>
+</ul>
+<figure data-type="image" tabindex="3"><a href="https://github.com/2017-fall-DL-training-program/Setup_tutorial/blob/master/img/anydesk.png"><img src="https://github.com/2017-fall-DL-training-program/Setup_tutorial/raw/master/img/anydesk.png" alt="anydesk" loading="lazy"></a></figure>
+<ul>
+<li>相关解决方案：https://ubuntuqa.com/article/2583.html</li>
+<li>anydesk特别慢，后来修改使用nomachine使用浮动ip登录，稳定快速</li>
+</ul>
+
+              </div>
+              <div class="post-footer">
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jeffrey X.L. Chan
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://drxlchan.github.io/LMqad0C__/" title="Ubuntu修改屏幕分辨率">Ubuntu修改屏幕分辨率</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，转载请注明出处！
+    </li>
+  </ul>
+  <div class="tags">
+    
+      <a href="https://drxlchan.github.io/yE-Vsna4c/"># 平台搭建</a>
+    
+  </div>
+  <div class="nav">
+    <div class="nav-prev">
+      
+        <i class="fa fa-chevron-left"></i>
+        <a class="nav-pc-next" title="Ubuntu强化学习平台搭建" href="https://drxlchan.github.io/kx2O4XRDq/">Ubuntu强化学习平台搭建</a class="nav-pc-next">
+        <a class="nav-mobile-prev" title="Ubuntu强化学习平台搭建" href="https://drxlchan.github.io/kx2O4XRDq/">上一篇</a>
+      
+    </div>
+    <div class="nav-next">
+      
+        <a class="nav-pc-next" title="第二章 模型评估与选择-西瓜书" href="https://drxlchan.github.io/di-er-zhang-mo-xing-ping-gu-yu-xuan-ze-xi-gua-shu/">第二章 模型评估与选择-西瓜书</a>
+        <a class="nav-mobile-next" title="第二章 模型评估与选择-西瓜书" href="https://drxlchan.github.io/di-er-zhang-mo-xing-ping-gu-yu-xuan-ze-xi-gua-shu/">下一篇</a>
+        <i class="fa fa-chevron-right"></i>
+      
+    </div>
+  </div>
+</div>
+              
+  
+    
+      <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '507d6537c02949fc9fcf',
+    clientSecret: 'd79b97c069578bdff893c6d912ad6019f4f6e43a',
+    repo: 'jeffrey28.github.io',
+    owner: 'jeffrey28',
+    admin: ['jeffrey28'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+    
+    
+  
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-box">
+  <footer class="footer">
+    <div class="copyright">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | © 2019-2020 Theme By <a href="https://github.com/hsxyhao/gridea-theme-next" target="_blank">HsxyHao</a>
+    </div>
+    <div class="poweredby">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+  </footer>
+  
+  
+    <div class="drawer-box right" id="drawer_box">
+      <span class="muse-line muse-line-first"></span>
+      <span class="muse-line muse-line-middle"></span>
+      <span class="muse-line muse-line-last"></span>
+    </div>
+  
+  <div class="mist back-to-top" id="back_to_top">
+    <i class="fa fa-arrow-up"></i>
+    
+  </div>
+  
+    <div class="bg-img">
+      <img src="http://raw.githubusercontent.com/Jeffrey28/Figurebed/master/img/20200413111822.jpg" />
+    </div>
+  
+  
+  
+</div>
+<script>
+
+  let sideBarOpen = 'sidebar-open';
+  let body = document.body;
+  let back2Top = document.querySelector('#back_to_top'),
+  back2TopText = document.querySelector('#back_to_top_text'),
+  drawerBox = document.querySelector('#drawer_box'),
+  rightSideBar = document.querySelector('.sidebar'),
+  viewport = document.querySelector('body');
+
+  function scrollAnimation(currentY, targetY) {
+   
+    let needScrollTop = targetY - currentY
+    let _currentY = currentY
+    setTimeout(() => {
+      const dist = Math.ceil(needScrollTop / 10)
+      _currentY += dist
+      window.scrollTo(_currentY, currentY)
+      if (needScrollTop > 10 || needScrollTop < -10) {
+        scrollAnimation(_currentY, targetY)
+      } else {
+        window.scrollTo(_currentY, targetY)
+      }
+    }, 1)
+  }
+
+  back2Top.addEventListener("click", function(e) {
+    scrollAnimation(document.scrollingElement.scrollTop, 0);
+    e.stopPropagation();
+    return false;
+  });
+  
+  window.addEventListener('scroll', function(e) {
+    let percent = document.scrollingElement.scrollTop / (document.scrollingElement.scrollHeight - document.scrollingElement.clientHeight) * 100;
+    if (percent > 1 && !back2Top.classList.contains('back-top-active')) {
+      back2Top.classList.add('back-top-active');
+    }
+    if (percent == 0) {
+      back2Top.classList.remove('back-top-active');
+    }
+    if (back2TopText) {
+      back2TopText.textContent = Math.floor(percent);
+    }
+  });
+
+  
+  let hasCacu = false;
+  window.onresize = function() {
+    if (window.width > 991) {
+      calcuHeight();
+    } else {
+      hasCacu = false;
+    }
+  }
+
+  function calcuHeight() {
+    // 动态调整站点概览高度
+    if (!hasCacu && back2Top.classList.contains('pisces') || back2Top.classList.contains('gemini')) {
+      let sideBar = document.querySelector('.sidebar');
+      let navUl = document.querySelector('#site_nav');
+      sideBar.style = 'margin-top:' + (navUl.offsetHeight + navUl.offsetTop + 15) + 'px;';
+      hasCacu = true;
+    }
+  }
+  calcuHeight();
+  
+  let open = false, MOTION_TIME = 300, RIGHT_MOVE_DIS = '320px';
+
+  if (drawerBox) {
+    let rightMotions = document.querySelectorAll('.right-motion');
+    let right = drawerBox.classList.contains('right');
+
+    let transitionDir = right ? "transition.slideRightIn" : "transition.slideLeftIn";
+
+    let openProp, closeProp;
+    if (right) {
+      openProp = {
+        paddingRight: RIGHT_MOVE_DIS 
+      };
+      closeProp = {
+        paddingRight: '0px'
+      };
+    } else {
+      openProp = {
+        paddingLeft: RIGHT_MOVE_DIS 
+      };
+      closeProp = {
+        paddingLeft: '0px'
+      };
+    }
+
+    drawerBox.onclick = function() {
+      open = !open;
+      window.Velocity(rightSideBar, 'stop');
+      window.Velocity(viewport, 'stop');
+      window.Velocity(rightMotions, 'stop');
+      if (open) {
+        window.Velocity(rightSideBar, {
+          width: RIGHT_MOVE_DIS
+        }, {
+          duration: MOTION_TIME,
+          begin: function() {
+            window.Velocity(rightMotions, transitionDir,{ });
+          }
+        })
+        window.Velocity(viewport, openProp,{
+          duration: MOTION_TIME
+        });
+      } else {
+        window.Velocity(rightSideBar, {
+          width: '0px'
+        }, {
+          duration: MOTION_TIME,
+          begin: function() {
+            window.Velocity(rightMotions, {
+              opacity: 0
+            });
+          }
+        })
+        window.Velocity(viewport, closeProp ,{
+          duration: MOTION_TIME
+        });
+      }
+      for (let i = 0; i < drawerBox.children.length; i++) {
+        drawerBox.children[i].classList.toggle('muse-line');
+      }
+      drawerBox.classList.toggle(sideBarOpen);
+    }
+  }
+
+  // 链接跳转
+  let newWindow = 'true'
+  if (newWindow === 'true') {
+    let links = document.querySelectorAll('.post-body a')
+    links.forEach(item => {
+      if (!item.classList.contains('btn')) {
+        item.setAttribute("target","_blank");
+      }
+    })
+  }
+  // 代码高亮
+  hljs.initHighlightingOnLoad();
+
+</script>
+      <div class="light-box" id="light_box"></div>
+<script>
+  let imgs = document.querySelectorAll('.post-body img');
+  let lightBox = document.querySelector('#light_box');
+  lightBox.addEventListener('mousedown', (e) => {
+    e.preventDefault()
+  })
+  lightBox.addEventListener('mousewheel', (e) => {
+    e.preventDefault()
+  })
+  let width = window.innerWidth * 0.8;
+  lightBox.onclick= () => {
+    let img = lightBox.querySelector('img');
+    lightBox.style = '';
+    img && img.remove();
+  }
+  imgs.forEach(item => {
+    item.onclick = function(e) {
+      let lightImg = document.createElement('img');
+      lightImg.src = this.src;
+      lightBox.style = `height: 100%; opacity: 1; background-color: rgba(0, 0, 0, 0.5);cursor: zoom-out;`;
+      lightImg.style = `width: ${width}px; border: 1px solid #fff; border-radius: 2px;`;
+      lightImg.onclick = function() {
+        lightBox.style = '';
+        this.remove();
+      }
+      lightBox.append(lightImg);
+    }
+  })
+</script>
+    </div>
+  </body>
+  <script src="/media/js/motion.js"></script>
+</html>

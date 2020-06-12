@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="keywords" content="Gridea静态个人博客">
+<meta name="description" content="精其所以">
+<meta name="theme-color" content="#000">
+<title>第二章 模型评估与选择-西瓜书 | Jeffrey X.L. Chan</title>
+<link rel="shortcut icon" href="/favicon.ico?v=1591934737359">
+<link rel="stylesheet" href="/styles/main.css">
+<link rel="stylesheet" href="/media/css/mist.css">
+
+<link rel="stylesheet" href="/media/fonts/font-awesome.css">
+<link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Rosario:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+<link href="/media/hljs/styles/androidstudio.css" rel="stylesheet">  
+
+<script src="/media/hljs/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.0/velocity.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.0/velocity.ui.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+
+
+
+    <meta name="description" content="第二章 模型评估与选择-西瓜书" />
+    <meta name="keywords" content="西瓜书" />
+  </head>
+  <body>
+    <div class="head-top-line"></div>
+    <div class="header-box">
+      
+<div class=" mist">
+  <header class="header bg-color ">
+    <div class="blog-header box-shadow-wrapper  " id="header">
+      <div class="nav-toggle" id="nav_toggle">
+        <div class="toggle-box">
+          <div class="line line-top"></div>
+          <div class="line line-center"></div>
+          <div class="line line-bottom"></div>
+        </div>
+      </div>
+      <div class="site-meta">       
+        <div class="site-title">
+          
+            <a href="/" class="">
+              <span class="logo-line-before">
+                <i class=""></i>
+              </span>
+              <span class="main-title">Jeffrey X.L. Chan</span>
+              <span class="logo-line-after">
+                <i class=""></i>
+              </span>
+            </a>  
+          
+        </div>
+        
+      </div>
+      <nav class="site-nav" id="site_nav">
+        <ul id="nav_ul">
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://drxlchan.github.io" target="_self">
+                  <i class="fa fa-globe"></i> 首页
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://drxlchan.github.io/archives" target="_self">
+                  <i class="fa fa-globe"></i> 归档
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://drxlchan.github.io/tags" target="_self">
+                  <i class="fa fa-globe"></i> 标签
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://drxlchan.github.io/about" target="_self">
+                  <i class="fa fa-globe"></i> 关于
+                </a>
+              
+            </li>
+          
+          
+            
+              <li class="nav-item ">
+                <a href="/friends" target="_self">
+                  
+                    fa-ship友情链接
+                  
+                </a>
+              </li>
+            
+          
+        </ul>
+      </nav>
+    </div>
+  </header>
+</div>
+
+<script type="text/javascript"> 
+ 
+  let showNav = true;
+
+  let navToggle = document.querySelector('#nav_toggle'),
+  siteNav = document.querySelector('#site_nav');
+  
+  function navClick() {
+    let sideBar = document.querySelector('.sidebar');
+    let navUl = document.querySelector('#nav_ul');
+    navToggle.classList.toggle('nav-toggle-active');
+    siteNav.classList.toggle('nav-menu-active');
+    if (siteNav.classList.contains('nav-menu-active')) {
+      siteNav.style = "height: " + (navUl.children.length * 42) +"px !important";
+    } else {
+      siteNav.style = "";
+    }
+  }
+
+  navToggle.addEventListener('click',navClick);  
+</script>
+    </div>
+    <div class="main-continer">
+      
+      <div class="section-layout mist bg-color">
+        <div class="section-layout-wrapper">
+          
+
+<div class="sidebar">
+  
+    <div class="sidebar-box box-shadow-wrapper  right-motion" id="sidebar">
+      
+      <div class="sidebar-body mist" id="sidebar_body">
+        
+          
+            <div style="opacity: 1;">
+              <div class="toc-box right-motion">
+  <div class="toc-wrapper auto-number auto" id="toc_wrapper">
+    <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E7%BB%8F%E9%AA%8C%E8%AF%AF%E5%B7%AE%E4%B8%8E%E8%BF%87%E6%8B%9F%E5%90%88">经验误差与过拟合</a></li>
+<li><a href="#%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95">评估方法</a></li>
+<li><a href="#%E7%95%99%E5%87%BA%E6%B3%95">留出法</a></li>
+<li><a href="#%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81%E6%B3%95">交叉验证法</a></li>
+<li><a href="#%E8%87%AA%E5%8A%A9%E6%B3%95">自助法</a></li>
+<li><a href="#%E8%B0%83%E5%8F%82%E4%B8%8E%E6%9C%80%E7%BB%88%E6%A8%A1%E5%9E%8B">调参与最终模型</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script>
+
+let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1; 
+let active = 'active-show', activeClass = 'active-current';
+let tocWrapper = document.querySelector('#toc_wrapper');
+let tocContent = tocWrapper.children[0];
+let autoNumber = tocWrapper&&tocWrapper.classList.contains('auto-number');
+
+function addTocNumber(elem, deep) {
+  if (!elem) {
+    return;
+  }
+  let prop = elem.__proto__;
+
+  if (prop === HTMLUListElement.prototype) {
+    for (let i = 0; i < elem.children.length; i++) {
+      addTocNumber(elem.children[i], deep + (i + 1) + '.');
+    }
+  } else if (prop === HTMLLIElement.prototype) {
+    // 保存li元素
+    if (elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
+      lList.push(elem);
+    }
+    for (let i = 0; i < elem.children.length; i++) {
+      let cur = elem.children[i];
+      if (cur.__proto__ === HTMLAnchorElement.prototype) {
+        if (autoNumber) {
+          cur.text =  deep + ' ' + cur.text;
+        }
+      } else if (cur.__proto__ === HTMLUListElement.prototype) {
+        addTocNumber(cur, deep);
+      }
+    }
+  }
+}
+
+function removeParentActiveClass() {
+  let parents = tocContent.querySelectorAll('.'+active)
+  parents.forEach(function(elem) {
+    elem.classList.remove(active);
+  });
+}
+
+function addActiveClass(index) {
+  if (index >= 0 && index < hList.length) {
+    lList[index].classList.add(activeClass);
+  }
+}
+
+function removeActiveClass(index) {
+  if (index >= 0 && index < hList.length) {
+    lList[index].classList.remove(activeClass);
+  }
+}
+
+function addActiveLiElemment(elem, parent) {
+  if (!elem || elem === parent) {
+    return;
+  } else {
+    if (elem.__proto__ === HTMLLIElement.prototype) {
+      elem.classList.add(active);
+    }
+    addActiveLiElemment(elem.parentElement, parent);
+  }
+}
+
+function showToc() {
+  if (tocWrapper) {
+    postBody = document.querySelector('#post_body');
+    for (let i = 0; i < postBody.children.length; i++) {
+      if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
+        hList.push(postBody.children[i]);
+      }
+    }
+    if (tocWrapper.classList.contains('compress')) {
+        tocContent.classList.add('closed');
+    } else if (tocWrapper.classList.contains('no_compress')){
+      tocContent.classList.add('expanded');
+    } else {
+      if (hList.length > 10) {
+        active = 'active-hidden'
+        tocContent.classList.add('closed');
+      } else {
+        tocContent.classList.add('expanded');
+      }
+    }
+  }
+}
+
+(function() {
+  // 处理不是从#一级标题开始目录
+  if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
+    let con = tocContent.children[0].children[0];
+    tocContent.innerHTML = con.innerHTML;
+  }
+  let markdownItTOC = document.querySelector('.markdownIt-TOC');
+  let innerHeight = window.innerHeight;
+  markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
+  addTocNumber(tocContent, '');
+})();
+
+document.addEventListener('scroll', function(e) {
+  if (lList.length <= 0) {
+    return;
+  }
+  let scrollTop = document.scrollingElement.scrollTop + 10;
+  let dir;
+
+  if (lastTop - scrollTop > 0) {
+    dir = 'up';
+  } else {
+    dir = 'down';
+  }
+
+  lastTop = scrollTop;
+  if (scrollTop <= 0) {
+    if (lastIndex >= 0 && lastIndex < hList.length) {
+      lList[lastIndex].classList.remove(activeClass);
+    }
+    return;
+  }
+
+  let current = 0, hasFind = false;
+  for (let i = 0; i < hList.length; i++) {
+    if (hList[i].offsetTop > scrollTop) {
+      current = i;
+      hasFind = true;
+      break;
+    }
+  }
+  if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
+    current = hList.length - 1;
+  } else {
+    current--;
+  }
+  if (dir === 'down') {
+    if (current > lastIndex) {
+      addActiveClass(current);
+      removeActiveClass(lastIndex) 
+      lastIndex = current;
+      removeParentActiveClass();
+      lList[current] && addActiveLiElemment(lList[current].parentElement,tocContent);
+    }
+  } else {
+    if (current < lastIndex) {
+      addActiveClass(current);
+      removeActiveClass(lastIndex);
+      lastIndex = current;
+      removeParentActiveClass();
+      lList[current] && addActiveLiElemment(lList[current].parentElement,tocContent);
+    }
+  }
+});
+
+window.addEventListener('load', function() {
+  showToc();
+  document.querySelector('#sidebar').style='display: block;';
+  tocWrapper.classList.add('toc-active');
+  setTimeout(function() {
+    if ("createEvent" in document) {
+      let evt = document.createEvent("HTMLEvents");
+      evt.initEvent("scroll", false, true);
+      document.dispatchEvent(evt);
+    }
+    else {
+      document.fireEvent("scroll");
+    }
+  }, 500)
+})
+
+</script>
+            </div>
+          
+        
+      </div>
+    </div>
+  
+</div>
+<script>
+  const SIDEBAR_TITLE_ACTIVE = 'sidebar-title-active';
+  const SIDEBAR_BODY_ACTIVE = 'sidebar-body-active';
+  const SLIDE_UP_IN = 'slide-up-in';
+
+  let sidebar = document.querySelector('#sidebar'),
+  tocSideBar = document.querySelector('#tocSideBar'),
+  metaSideBar = document.querySelector('#metaSideBar'),
+  postToc = document.querySelector('#post_toc'),
+  postSiteMeta = document.querySelector('#post_side_meta'),
+  sidebarTitle = document.querySelector('.sidebar-title'),
+  sidebarBody = document.querySelector('#sidebar_body');
+
+  tocSideBar && tocSideBar.addEventListener('click', (e) => {
+    toggleSidebar(e);
+  });
+
+  metaSideBar && metaSideBar.addEventListener('click', (e) => {
+    toggleSidebar(e);
+  });
+
+  function toggleSidebar(e) {
+    let currentTitle = document.querySelector("."+SIDEBAR_TITLE_ACTIVE);
+    if (currentTitle == e.srcElement) {
+      return ;
+    }
+    let current, showElement, hideElement;
+    if (e.srcElement == metaSideBar) {
+      showElement = postSiteMeta;
+      hideElement = postToc;
+    } else if (e.srcElement == tocSideBar){
+      showElement = postToc;
+      hideElement = postSiteMeta;
+    }
+    currentTitle.classList.remove(SIDEBAR_TITLE_ACTIVE);
+    e.srcElement.classList.add(SIDEBAR_TITLE_ACTIVE);
+
+    window.Velocity(hideElement, 'stop');
+    window.Velocity(hideElement, 'transition.slideUpOut', {
+      display: 'none',
+      duration: 200,
+      complete: function () {
+        window.Velocity(showElement, 'transition.slideDownIn', {
+          duration: 200
+        });
+      }
+    })
+    hideElement.classList.remove(SIDEBAR_BODY_ACTIVE);
+    showElement.classList.add(SIDEBAR_BODY_ACTIVE);
+  }
+
+  postToc && postToc.addEventListener('transitionend', function() {
+    this.classList.remove(SLIDE_UP_IN);
+  });
+
+  if (sidebarBody) {
+    if (sidebarBody.classList.contains('pisces') || sidebarBody.classList.contains('gemini')) {
+      let hasFix = false;
+      let scrollEl = document.querySelector('.main-continer');
+      let limitTop = document.querySelector('#nav_ul').children.length * 42 + 162;
+      window.addEventListener('scroll', function(e) {
+        if (document.scrollingElement.scrollTop >= limitTop) {
+          if (!hasFix) {
+            sidebar.classList.add('sidebar-fixed');
+            hasFix = true;
+          }
+        } else {
+          if (hasFix) {
+            sidebar.classList.remove('sidebar-fixed');
+            hasFix = false;
+          }
+        }
+      });
+    }
+  }
+  
+</script>
+          <div class="section-box box-shadow-wrapper">
+            <div class="section bg-color post post-page">
+              <header class="post-header">
+  <h1 class="post-title">
+    <a class="post-title-link" href="https://drxlchan.github.io/di-er-zhang-mo-xing-ping-gu-yu-xuan-ze-xi-gua-shu/">
+      第二章 模型评估与选择-西瓜书
+    </a>
+  </h1>
+  <div class="post-meta">
+    
+    <span class="meta-item pc-show">
+      <i class="fa fa-calendar-o"></i>
+      <span>发布于</span>
+      <span>2019-06-13</span>
+      <span class="post-meta-divider pc-show">|</span>
+    </span>
+    
+      <span class="meta-item">
+        <i class="fa fa-folder-o"></i>
+        <span class="pc-show">分类于</span>
+        
+          
+            <a href="https://drxlchan.github.io/9-IBWqUF3/">
+              <span>西瓜书</span>
+            </a>
+          
+        
+      </span>
+      <span class="post-meta-divider">|</span>
+    
+    <span class="meta-item">
+      <i class="fa fa-clock-o"></i>
+      <span>8分钟</span>
+    </span>
+    <span class="meta-item">
+      <span class="post-meta-divider">|</span>
+      <i class="fa fa-file-word-o"></i>
+      <span>2265<span class="pc-show">字数</span></span>
+    </span>
+    
+  </div>
+</header>
+              <div class="post-body next-md-body" id="post_body">
+                <p>模型评估与选择. 在这一章中, 重点探讨经验误差与过拟合, 评估方法这两个小节中的内容</p>
+<!-- more -->
+<h2 id="经验误差与过拟合">经验误差与过拟合</h2>
+<ul>
+<li>错误率(Error Rate): 分类错误的样本数占样本总数的比例. 如果在m个样本中, 有a个样本分类错误, 则错误率  .</li>
+<li>精度(Accuracy): 精度 = 1 - 错误率 ,  .</li>
+<li>误差(Error): 学习器的实际预测输出与样本的真实输出之间的差异被称为误差. 学习器在训练集上的误差称为'训练误差'(Training Error)或'经验误差'(Empirical Error), 在新样本上的误差称为'泛化误差'(Generalization Error).</li>
+<li>经验误差(Empirical Error): 我们希望得到泛化误差小的学习器. 然而我们事先并不知道新样本是什么样, 实际能做的就是努力使经验误差最小化.</li>
+<li>过拟合(Overfitting): 学习器把训练样本学的太好, 很可能已经把训练样本自身的一些特点当做了所有潜在样本都会具有的一般性质, 所导致的泛化性能下降. 有很多种因素可能导致过拟合, 其中最常见的情况是由于学习能力过于强大, 以至于把训练样本所包含的不太一般的特征都学到了. 过拟合是无法避免的, 我们所能做的只是'缓解', 或者说减小风险.</li>
+<li>欠拟合(Underfitting): 指学习器对训练样本的一般性质尚未学好. 学习力低下.</li>
+<li>模型选择(Model Selection): 在解决现实问题时, 对不同算法模型的选择. 对候选模型的泛化误差进行评估, 然后选择泛化误差最小的那个模型.</li>
+</ul>
+<h2 id="评估方法">评估方法</h2>
+<ul>
+<li>测试集(Testing Set): 用于测试学习器对新样本的判别能力, 然后以测试集上的'测试误差'(Testing Error)作为泛化误差的近似. 通常假设测试样本也是从样本真实分布中独立分布采样而得. 单需注意的是, 测试集应该尽可能与训练集互斥, 即测试样本尽量不在训练集中出现, 未在训练过程中使用过.</li>
+</ul>
+<h2 id="留出法">留出法</h2>
+<ul>
+<li>留出法(Hold-Out): 直接将数据集D划分为两个互斥的集合, 其中一个集合作为训练集S, 另一个作为测试集T, 即  ,  , 在S上训练出模型后, 用T来评估其测试误差, 作为对泛化误差的估计. 需要注意的是, 训练/测试集的划分要尽可能保持数据分布的一致性, 避免因数据划分过程引入额外的偏差而对最终结果产生影响, 例如在分类任务中至少要保持样本的类别比例相似.</li>
+<li>分层采样(Stratified Sampling): 如果从采样(Sampling)的角度来看待数据集的划分过程, 则保留类别比例的采样方式通常称为'分层采样'(Stratified Sampling).</li>
+<li>在使用留出法时, 一般要采用若干次随机划分, 重复进行实验评估后取均值做为留出法的评估结果.</li>
+<li>我们希望评估的是用D训练出的模型的性能, 但留出法需划分训练/测试集, 这样就会导致一个窘境: 若令训练集S包含绝大多数样本, 则训练出的模型可能更接近于用D训练出的模型, 但由于T比较小, 评估结果可能不够稳定准确; 若令测试集T多包含一些样本, 则训练集S与D差别更大了, 被评估的模型与用D训练出的模型相比可能有比较大的差别, 从而降低了评估结果的保真性(Fidelity). 这个问题没有完美的解决方案, 常见做法是将大约  的样本用于训练, 剩余样本用于测试.</li>
+</ul>
+<h2 id="交叉验证法">交叉验证法</h2>
+<ul>
+<li>交叉验证法(Cross Validation): 先将数据集D划分为k个大小相似的互斥子集, 即  ,  . 每个子集  都尽可能保持数据分布的一致性, 即从D中通过分层采样得到. 然后, 每次用  个子集的并集作为训练集, 余下的那个子集作为测试集; 这样就可获得k组训练/测试集, 从而可进行k此训练和测试, 最终返回的是这k个测试结果的均值. 显然, 交叉验证法评估结果的稳定性和保真性在很大程度上取决于k的取值, 为强调这一点, 通常把交叉验证法称为'k折交叉验证'(K-fold Cross Validation). k最常用的取值是10, 此时恒伟10折交叉验证; 其他常用的k值有5, 20等.<br>
+<img src="https://raw.githubusercontent.com/jeffrey28/Figurebed/master/img/20190613222710.png"/></li>
+<li>如上图, 与留出法相似, 将数据集D划分为k个自己同样存在多种划分方式. 为奸笑因样本划分不同而引入的差别, k折交叉验证通常要随机使用不同的划分重复p次, 最终的评估结果是这p次k折交叉验证结果的均值. 假定数据集D中包含m个样本, 若令  , 则得到了交叉验证法的一个特例: 留一法(Leave-One-Out, 简称LOO).</li>
+<li>留一法(Leave-One-Out): 留一法不受随机样本划分方式的影响, 因为m个样本只有唯一的方式划分为m个子集, 每个子集包含一个样本; 留一法使用的训练集与初始数据集相比只少了一个样本, 这就是的在绝大多数情况下, 留一法中被实际评估的模型与七万该评估的用D训练出的模型很相似. 因此, 留一法的评估结果往往被认为比较准确. 然后留一法也有缺陷: 在数据集比较大时, 训练m个模型的计算开销可能是难以忍受的, 二这还是在未考虑算法调参的情况下. 另外, 留一法的估计结果也未必永远比其他评估方法准确; '没有免费的午餐'定理,对实验评估方法同样适用.</li>
+</ul>
+<h2 id="自助法">自助法</h2>
+<ul>
+<li>自助法(BootStrapping): 直接以自助采样法(BootStrap Sampling)为基础, 给定包含m个样本的数据集D, 我们对他进行采样产生数据集  : 每次随机从D中挑选一个样本, 将其拷贝放入  , 然后再讲改样本放回初始数据集D中, 使得该样本在下次采样时仍有可能被采到; 这个过程重复执行m次后, 我们就得到了包含m个样本的数据集  , 这就是自助采样的结果. 显然, D中会有一部分样本会在  中多次出现, 而另一部分样本不出现. 可以做一个简单的估计, 样本在m次采样中始终不背采到的概率是  , 取极限得到:</li>
+<li>自助法在数据集较小, 难以有效划分训练/测试集时很有用; 此外自助法能从初始数据集中产生多个不同的训练集, 这对集成学习等方法有很大的好处. 然而自助法产生的数据集改变了初始数据集的分布, 这会引入估计偏差. 一次在初始数据量足够是, 留出法和交叉验证法更常用一些.</li>
+</ul>
+<h2 id="调参与最终模型">调参与最终模型</h2>
+<ul>
+<li>调参(Parameter Tunning): 大多数学习算法都有些参数(Parameter)需要设定, 参数配置不用, 学的模型的性能往往有显著差别. 因此, 在进行模型评估与选择时, 除了要对适用学习算法进行选择, 还需要对算法参数进行设定, 这就是通常所说的'参数调节'或简称'调参'(Parameter Tunning).</li>
+<li>给定包含m个样本的数据集D, 在模型评估与选择过程中由于需要在留出一部分数据激进型评估测试, 事实上我们只使用了一部分数据训练模型. 因此, 在模型选择完成后, 学习算法和参数配置已选定, 此时应该用数据集D重新训练模型. 这个模型在训练过程中使用了所有m个样本, 这才是我们最终提交给用户的模型.</li>
+<li>我们通常把学的模型在实际使用中遇到的数据称为测试数据, 为了加以区分, 模型评估与选择中用于评估测试的数据集常称为'验证集'(Validation Set). 例如, 在研究对比不同算法的泛化性能时, 我们用测试集上的判别效果来估计模型在实际使用时的繁华能力, 二把训练数据另外划分为训练集和验证集, 基于验证集上的性能来进行模型选择和调参.</li>
+</ul>
+
+              </div>
+              <div class="post-footer">
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jeffrey X.L. Chan
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://drxlchan.github.io/di-er-zhang-mo-xing-ping-gu-yu-xuan-ze-xi-gua-shu/" title="第二章 模型评估与选择-西瓜书">第二章 模型评估与选择-西瓜书</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，转载请注明出处！
+    </li>
+  </ul>
+  <div class="tags">
+    
+      <a href="https://drxlchan.github.io/9-IBWqUF3/"># 西瓜书</a>
+    
+  </div>
+  <div class="nav">
+    <div class="nav-prev">
+      
+        <i class="fa fa-chevron-left"></i>
+        <a class="nav-pc-next" title="Ubuntu修改屏幕分辨率" href="https://drxlchan.github.io/LMqad0C__/">Ubuntu修改屏幕分辨率</a class="nav-pc-next">
+        <a class="nav-mobile-prev" title="Ubuntu修改屏幕分辨率" href="https://drxlchan.github.io/LMqad0C__/">上一篇</a>
+      
+    </div>
+    <div class="nav-next">
+      
+        <a class="nav-pc-next" title="第五章 神经网络-西瓜书" href="https://drxlchan.github.io/di-wu-zhang-shen-jing-wang-luo-xi-gua-shu/">第五章 神经网络-西瓜书</a>
+        <a class="nav-mobile-next" title="第五章 神经网络-西瓜书" href="https://drxlchan.github.io/di-wu-zhang-shen-jing-wang-luo-xi-gua-shu/">下一篇</a>
+        <i class="fa fa-chevron-right"></i>
+      
+    </div>
+  </div>
+</div>
+              
+  
+    
+      <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '507d6537c02949fc9fcf',
+    clientSecret: 'd79b97c069578bdff893c6d912ad6019f4f6e43a',
+    repo: 'jeffrey28.github.io',
+    owner: 'jeffrey28',
+    admin: ['jeffrey28'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+    
+    
+  
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-box">
+  <footer class="footer">
+    <div class="copyright">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | © 2019-2020 Theme By <a href="https://github.com/hsxyhao/gridea-theme-next" target="_blank">HsxyHao</a>
+    </div>
+    <div class="poweredby">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+  </footer>
+  
+  
+    <div class="drawer-box right" id="drawer_box">
+      <span class="muse-line muse-line-first"></span>
+      <span class="muse-line muse-line-middle"></span>
+      <span class="muse-line muse-line-last"></span>
+    </div>
+  
+  <div class="mist back-to-top" id="back_to_top">
+    <i class="fa fa-arrow-up"></i>
+    
+  </div>
+  
+    <div class="bg-img">
+      <img src="http://raw.githubusercontent.com/Jeffrey28/Figurebed/master/img/20200413111822.jpg" />
+    </div>
+  
+  
+  
+</div>
+<script>
+
+  let sideBarOpen = 'sidebar-open';
+  let body = document.body;
+  let back2Top = document.querySelector('#back_to_top'),
+  back2TopText = document.querySelector('#back_to_top_text'),
+  drawerBox = document.querySelector('#drawer_box'),
+  rightSideBar = document.querySelector('.sidebar'),
+  viewport = document.querySelector('body');
+
+  function scrollAnimation(currentY, targetY) {
+   
+    let needScrollTop = targetY - currentY
+    let _currentY = currentY
+    setTimeout(() => {
+      const dist = Math.ceil(needScrollTop / 10)
+      _currentY += dist
+      window.scrollTo(_currentY, currentY)
+      if (needScrollTop > 10 || needScrollTop < -10) {
+        scrollAnimation(_currentY, targetY)
+      } else {
+        window.scrollTo(_currentY, targetY)
+      }
+    }, 1)
+  }
+
+  back2Top.addEventListener("click", function(e) {
+    scrollAnimation(document.scrollingElement.scrollTop, 0);
+    e.stopPropagation();
+    return false;
+  });
+  
+  window.addEventListener('scroll', function(e) {
+    let percent = document.scrollingElement.scrollTop / (document.scrollingElement.scrollHeight - document.scrollingElement.clientHeight) * 100;
+    if (percent > 1 && !back2Top.classList.contains('back-top-active')) {
+      back2Top.classList.add('back-top-active');
+    }
+    if (percent == 0) {
+      back2Top.classList.remove('back-top-active');
+    }
+    if (back2TopText) {
+      back2TopText.textContent = Math.floor(percent);
+    }
+  });
+
+  
+  let hasCacu = false;
+  window.onresize = function() {
+    if (window.width > 991) {
+      calcuHeight();
+    } else {
+      hasCacu = false;
+    }
+  }
+
+  function calcuHeight() {
+    // 动态调整站点概览高度
+    if (!hasCacu && back2Top.classList.contains('pisces') || back2Top.classList.contains('gemini')) {
+      let sideBar = document.querySelector('.sidebar');
+      let navUl = document.querySelector('#site_nav');
+      sideBar.style = 'margin-top:' + (navUl.offsetHeight + navUl.offsetTop + 15) + 'px;';
+      hasCacu = true;
+    }
+  }
+  calcuHeight();
+  
+  let open = false, MOTION_TIME = 300, RIGHT_MOVE_DIS = '320px';
+
+  if (drawerBox) {
+    let rightMotions = document.querySelectorAll('.right-motion');
+    let right = drawerBox.classList.contains('right');
+
+    let transitionDir = right ? "transition.slideRightIn" : "transition.slideLeftIn";
+
+    let openProp, closeProp;
+    if (right) {
+      openProp = {
+        paddingRight: RIGHT_MOVE_DIS 
+      };
+      closeProp = {
+        paddingRight: '0px'
+      };
+    } else {
+      openProp = {
+        paddingLeft: RIGHT_MOVE_DIS 
+      };
+      closeProp = {
+        paddingLeft: '0px'
+      };
+    }
+
+    drawerBox.onclick = function() {
+      open = !open;
+      window.Velocity(rightSideBar, 'stop');
+      window.Velocity(viewport, 'stop');
+      window.Velocity(rightMotions, 'stop');
+      if (open) {
+        window.Velocity(rightSideBar, {
+          width: RIGHT_MOVE_DIS
+        }, {
+          duration: MOTION_TIME,
+          begin: function() {
+            window.Velocity(rightMotions, transitionDir,{ });
+          }
+        })
+        window.Velocity(viewport, openProp,{
+          duration: MOTION_TIME
+        });
+      } else {
+        window.Velocity(rightSideBar, {
+          width: '0px'
+        }, {
+          duration: MOTION_TIME,
+          begin: function() {
+            window.Velocity(rightMotions, {
+              opacity: 0
+            });
+          }
+        })
+        window.Velocity(viewport, closeProp ,{
+          duration: MOTION_TIME
+        });
+      }
+      for (let i = 0; i < drawerBox.children.length; i++) {
+        drawerBox.children[i].classList.toggle('muse-line');
+      }
+      drawerBox.classList.toggle(sideBarOpen);
+    }
+  }
+
+  // 链接跳转
+  let newWindow = 'true'
+  if (newWindow === 'true') {
+    let links = document.querySelectorAll('.post-body a')
+    links.forEach(item => {
+      if (!item.classList.contains('btn')) {
+        item.setAttribute("target","_blank");
+      }
+    })
+  }
+  // 代码高亮
+  hljs.initHighlightingOnLoad();
+
+</script>
+      <div class="light-box" id="light_box"></div>
+<script>
+  let imgs = document.querySelectorAll('.post-body img');
+  let lightBox = document.querySelector('#light_box');
+  lightBox.addEventListener('mousedown', (e) => {
+    e.preventDefault()
+  })
+  lightBox.addEventListener('mousewheel', (e) => {
+    e.preventDefault()
+  })
+  let width = window.innerWidth * 0.8;
+  lightBox.onclick= () => {
+    let img = lightBox.querySelector('img');
+    lightBox.style = '';
+    img && img.remove();
+  }
+  imgs.forEach(item => {
+    item.onclick = function(e) {
+      let lightImg = document.createElement('img');
+      lightImg.src = this.src;
+      lightBox.style = `height: 100%; opacity: 1; background-color: rgba(0, 0, 0, 0.5);cursor: zoom-out;`;
+      lightImg.style = `width: ${width}px; border: 1px solid #fff; border-radius: 2px;`;
+      lightImg.onclick = function() {
+        lightBox.style = '';
+        this.remove();
+      }
+      lightBox.append(lightImg);
+    }
+  })
+</script>
+    </div>
+  </body>
+  <script src="/media/js/motion.js"></script>
+</html>

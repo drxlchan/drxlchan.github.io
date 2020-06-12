@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="keywords" content="Gridea静态个人博客">
+<meta name="description" content="精其所以">
+<meta name="theme-color" content="#000">
+<title>在Ubuntu上使用rclone挂载OneDrive网盘 | Jeffrey X.L. Chan</title>
+<link rel="shortcut icon" href="/favicon.ico?v=1591934737359">
+<link rel="stylesheet" href="/styles/main.css">
+<link rel="stylesheet" href="/media/css/mist.css">
+
+<link rel="stylesheet" href="/media/fonts/font-awesome.css">
+<link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Rosario:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+<link href="/media/hljs/styles/androidstudio.css" rel="stylesheet">  
+
+<script src="/media/hljs/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.0/velocity.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.0/velocity.ui.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+
+
+
+    <meta name="description" content="在Ubuntu上使用rclone挂载OneDrive网盘" />
+    <meta name="keywords" content="平台搭建" />
+  </head>
+  <body>
+    <div class="head-top-line"></div>
+    <div class="header-box">
+      
+<div class=" mist">
+  <header class="header bg-color ">
+    <div class="blog-header box-shadow-wrapper  " id="header">
+      <div class="nav-toggle" id="nav_toggle">
+        <div class="toggle-box">
+          <div class="line line-top"></div>
+          <div class="line line-center"></div>
+          <div class="line line-bottom"></div>
+        </div>
+      </div>
+      <div class="site-meta">       
+        <div class="site-title">
+          
+            <a href="/" class="">
+              <span class="logo-line-before">
+                <i class=""></i>
+              </span>
+              <span class="main-title">Jeffrey X.L. Chan</span>
+              <span class="logo-line-after">
+                <i class=""></i>
+              </span>
+            </a>  
+          
+        </div>
+        
+      </div>
+      <nav class="site-nav" id="site_nav">
+        <ul id="nav_ul">
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://drxlchan.github.io" target="_self">
+                  <i class="fa fa-globe"></i> 首页
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://drxlchan.github.io/archives" target="_self">
+                  <i class="fa fa-globe"></i> 归档
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://drxlchan.github.io/tags" target="_self">
+                  <i class="fa fa-globe"></i> 标签
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://drxlchan.github.io/about" target="_self">
+                  <i class="fa fa-globe"></i> 关于
+                </a>
+              
+            </li>
+          
+          
+            
+              <li class="nav-item ">
+                <a href="/friends" target="_self">
+                  
+                    fa-ship友情链接
+                  
+                </a>
+              </li>
+            
+          
+        </ul>
+      </nav>
+    </div>
+  </header>
+</div>
+
+<script type="text/javascript"> 
+ 
+  let showNav = true;
+
+  let navToggle = document.querySelector('#nav_toggle'),
+  siteNav = document.querySelector('#site_nav');
+  
+  function navClick() {
+    let sideBar = document.querySelector('.sidebar');
+    let navUl = document.querySelector('#nav_ul');
+    navToggle.classList.toggle('nav-toggle-active');
+    siteNav.classList.toggle('nav-menu-active');
+    if (siteNav.classList.contains('nav-menu-active')) {
+      siteNav.style = "height: " + (navUl.children.length * 42) +"px !important";
+    } else {
+      siteNav.style = "";
+    }
+  }
+
+  navToggle.addEventListener('click',navClick);  
+</script>
+    </div>
+    <div class="main-continer">
+      
+      <div class="section-layout mist bg-color">
+        <div class="section-layout-wrapper">
+          
+
+<div class="sidebar">
+  
+    <div class="sidebar-box box-shadow-wrapper  right-motion" id="sidebar">
+      
+      <div class="sidebar-body mist" id="sidebar_body">
+        
+          
+            <div style="opacity: 1;">
+              <div class="toc-box right-motion">
+  <div class="toc-wrapper auto-number auto" id="toc_wrapper">
+    <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E8%AF%B4%E6%98%8E">说明</a></li>
+<li><a href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%8E%88%E6%9D%83-%E7%9C%81%E7%95%A5">客户端授权--省略</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85rclone">安装rclone</a></li>
+<li><a href="#%E6%8C%82%E8%BD%BD">挂载</a></li>
+<li><a href="#%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF">开机自启</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+</div>
+
+<script>
+
+let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1; 
+let active = 'active-show', activeClass = 'active-current';
+let tocWrapper = document.querySelector('#toc_wrapper');
+let tocContent = tocWrapper.children[0];
+let autoNumber = tocWrapper&&tocWrapper.classList.contains('auto-number');
+
+function addTocNumber(elem, deep) {
+  if (!elem) {
+    return;
+  }
+  let prop = elem.__proto__;
+
+  if (prop === HTMLUListElement.prototype) {
+    for (let i = 0; i < elem.children.length; i++) {
+      addTocNumber(elem.children[i], deep + (i + 1) + '.');
+    }
+  } else if (prop === HTMLLIElement.prototype) {
+    // 保存li元素
+    if (elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
+      lList.push(elem);
+    }
+    for (let i = 0; i < elem.children.length; i++) {
+      let cur = elem.children[i];
+      if (cur.__proto__ === HTMLAnchorElement.prototype) {
+        if (autoNumber) {
+          cur.text =  deep + ' ' + cur.text;
+        }
+      } else if (cur.__proto__ === HTMLUListElement.prototype) {
+        addTocNumber(cur, deep);
+      }
+    }
+  }
+}
+
+function removeParentActiveClass() {
+  let parents = tocContent.querySelectorAll('.'+active)
+  parents.forEach(function(elem) {
+    elem.classList.remove(active);
+  });
+}
+
+function addActiveClass(index) {
+  if (index >= 0 && index < hList.length) {
+    lList[index].classList.add(activeClass);
+  }
+}
+
+function removeActiveClass(index) {
+  if (index >= 0 && index < hList.length) {
+    lList[index].classList.remove(activeClass);
+  }
+}
+
+function addActiveLiElemment(elem, parent) {
+  if (!elem || elem === parent) {
+    return;
+  } else {
+    if (elem.__proto__ === HTMLLIElement.prototype) {
+      elem.classList.add(active);
+    }
+    addActiveLiElemment(elem.parentElement, parent);
+  }
+}
+
+function showToc() {
+  if (tocWrapper) {
+    postBody = document.querySelector('#post_body');
+    for (let i = 0; i < postBody.children.length; i++) {
+      if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
+        hList.push(postBody.children[i]);
+      }
+    }
+    if (tocWrapper.classList.contains('compress')) {
+        tocContent.classList.add('closed');
+    } else if (tocWrapper.classList.contains('no_compress')){
+      tocContent.classList.add('expanded');
+    } else {
+      if (hList.length > 10) {
+        active = 'active-hidden'
+        tocContent.classList.add('closed');
+      } else {
+        tocContent.classList.add('expanded');
+      }
+    }
+  }
+}
+
+(function() {
+  // 处理不是从#一级标题开始目录
+  if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
+    let con = tocContent.children[0].children[0];
+    tocContent.innerHTML = con.innerHTML;
+  }
+  let markdownItTOC = document.querySelector('.markdownIt-TOC');
+  let innerHeight = window.innerHeight;
+  markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
+  addTocNumber(tocContent, '');
+})();
+
+document.addEventListener('scroll', function(e) {
+  if (lList.length <= 0) {
+    return;
+  }
+  let scrollTop = document.scrollingElement.scrollTop + 10;
+  let dir;
+
+  if (lastTop - scrollTop > 0) {
+    dir = 'up';
+  } else {
+    dir = 'down';
+  }
+
+  lastTop = scrollTop;
+  if (scrollTop <= 0) {
+    if (lastIndex >= 0 && lastIndex < hList.length) {
+      lList[lastIndex].classList.remove(activeClass);
+    }
+    return;
+  }
+
+  let current = 0, hasFind = false;
+  for (let i = 0; i < hList.length; i++) {
+    if (hList[i].offsetTop > scrollTop) {
+      current = i;
+      hasFind = true;
+      break;
+    }
+  }
+  if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
+    current = hList.length - 1;
+  } else {
+    current--;
+  }
+  if (dir === 'down') {
+    if (current > lastIndex) {
+      addActiveClass(current);
+      removeActiveClass(lastIndex) 
+      lastIndex = current;
+      removeParentActiveClass();
+      lList[current] && addActiveLiElemment(lList[current].parentElement,tocContent);
+    }
+  } else {
+    if (current < lastIndex) {
+      addActiveClass(current);
+      removeActiveClass(lastIndex);
+      lastIndex = current;
+      removeParentActiveClass();
+      lList[current] && addActiveLiElemment(lList[current].parentElement,tocContent);
+    }
+  }
+});
+
+window.addEventListener('load', function() {
+  showToc();
+  document.querySelector('#sidebar').style='display: block;';
+  tocWrapper.classList.add('toc-active');
+  setTimeout(function() {
+    if ("createEvent" in document) {
+      let evt = document.createEvent("HTMLEvents");
+      evt.initEvent("scroll", false, true);
+      document.dispatchEvent(evt);
+    }
+    else {
+      document.fireEvent("scroll");
+    }
+  }, 500)
+})
+
+</script>
+            </div>
+          
+        
+      </div>
+    </div>
+  
+</div>
+<script>
+  const SIDEBAR_TITLE_ACTIVE = 'sidebar-title-active';
+  const SIDEBAR_BODY_ACTIVE = 'sidebar-body-active';
+  const SLIDE_UP_IN = 'slide-up-in';
+
+  let sidebar = document.querySelector('#sidebar'),
+  tocSideBar = document.querySelector('#tocSideBar'),
+  metaSideBar = document.querySelector('#metaSideBar'),
+  postToc = document.querySelector('#post_toc'),
+  postSiteMeta = document.querySelector('#post_side_meta'),
+  sidebarTitle = document.querySelector('.sidebar-title'),
+  sidebarBody = document.querySelector('#sidebar_body');
+
+  tocSideBar && tocSideBar.addEventListener('click', (e) => {
+    toggleSidebar(e);
+  });
+
+  metaSideBar && metaSideBar.addEventListener('click', (e) => {
+    toggleSidebar(e);
+  });
+
+  function toggleSidebar(e) {
+    let currentTitle = document.querySelector("."+SIDEBAR_TITLE_ACTIVE);
+    if (currentTitle == e.srcElement) {
+      return ;
+    }
+    let current, showElement, hideElement;
+    if (e.srcElement == metaSideBar) {
+      showElement = postSiteMeta;
+      hideElement = postToc;
+    } else if (e.srcElement == tocSideBar){
+      showElement = postToc;
+      hideElement = postSiteMeta;
+    }
+    currentTitle.classList.remove(SIDEBAR_TITLE_ACTIVE);
+    e.srcElement.classList.add(SIDEBAR_TITLE_ACTIVE);
+
+    window.Velocity(hideElement, 'stop');
+    window.Velocity(hideElement, 'transition.slideUpOut', {
+      display: 'none',
+      duration: 200,
+      complete: function () {
+        window.Velocity(showElement, 'transition.slideDownIn', {
+          duration: 200
+        });
+      }
+    })
+    hideElement.classList.remove(SIDEBAR_BODY_ACTIVE);
+    showElement.classList.add(SIDEBAR_BODY_ACTIVE);
+  }
+
+  postToc && postToc.addEventListener('transitionend', function() {
+    this.classList.remove(SLIDE_UP_IN);
+  });
+
+  if (sidebarBody) {
+    if (sidebarBody.classList.contains('pisces') || sidebarBody.classList.contains('gemini')) {
+      let hasFix = false;
+      let scrollEl = document.querySelector('.main-continer');
+      let limitTop = document.querySelector('#nav_ul').children.length * 42 + 162;
+      window.addEventListener('scroll', function(e) {
+        if (document.scrollingElement.scrollTop >= limitTop) {
+          if (!hasFix) {
+            sidebar.classList.add('sidebar-fixed');
+            hasFix = true;
+          }
+        } else {
+          if (hasFix) {
+            sidebar.classList.remove('sidebar-fixed');
+            hasFix = false;
+          }
+        }
+      });
+    }
+  }
+  
+</script>
+          <div class="section-box box-shadow-wrapper">
+            <div class="section bg-color post post-page">
+              <header class="post-header">
+  <h1 class="post-title">
+    <a class="post-title-link" href="https://drxlchan.github.io/vWFOyOWOp/">
+      在Ubuntu上使用rclone挂载OneDrive网盘
+    </a>
+  </h1>
+  <div class="post-meta">
+    
+    <span class="meta-item pc-show">
+      <i class="fa fa-calendar-o"></i>
+      <span>发布于</span>
+      <span>2020-04-13</span>
+      <span class="post-meta-divider pc-show">|</span>
+    </span>
+    
+      <span class="meta-item">
+        <i class="fa fa-folder-o"></i>
+        <span class="pc-show">分类于</span>
+        
+          
+            <a href="https://drxlchan.github.io/yE-Vsna4c/">
+              <span>平台搭建</span>
+            </a>
+          
+        
+      </span>
+      <span class="post-meta-divider">|</span>
+    
+    <span class="meta-item">
+      <i class="fa fa-clock-o"></i>
+      <span>9分钟</span>
+    </span>
+    <span class="meta-item">
+      <span class="post-meta-divider">|</span>
+      <i class="fa fa-file-word-o"></i>
+      <span>1595<span class="pc-show">字数</span></span>
+    </span>
+    
+  </div>
+</header>
+              <div class="post-body next-md-body" id="post_body">
+                <h2 id="说明">说明</h2>
+<p>本教程只适用<code>Debian</code>/<code>Ubuntu</code>系统，如果你是<code>CentOS</code>或者其它<code>Linux</code>系统，请使用以下命令安装<code>rclone</code>：</p>
+<pre><code class="language-powershell">curl https://rclone.org/install.sh | sudo bash
+</code></pre>
+<p>客户端授权、初始化配置和挂载方法和下面一样，开机自启可参考该教程→<a href="https://www.moerats.com/archives/870/">传送门</a>。</p>
+<h2 id="客户端授权-省略">客户端授权--省略</h2>
+<p>在本地<code>Windows</code>电脑上下载<code>rclone</code>，下载地址：https://rclone.org/downloads/。然后解压出来，比如我解压到<code>D</code>盘，文件夹命名<code>rclone</code>，此时点击<code>Win+R</code>，然后输入<code>cmd</code>，确定。再输入以下命令：</p>
+<pre><code class="language-powershell">cd /d d:\rclone
+rclone authorize &quot;onedrive&quot;
+</code></pre>
+<p>会出现以下信息：</p>
+<pre><code class="language-powershell">C:\Users\Administrator&gt;cd /d d:\rclone
+
+d:\rclone&gt;rclone authorize &quot;onedrive&quot;
+2018/01/23 20:28:56 NOTICE: Config file &quot;C:\\Users\\Administrator\\.config\\rclo
+ne\\rclone.conf&quot; not found - using defaults
+Choose OneDrive account type?
+ * Say b for a OneDrive business account
+ * Say p for a personal OneDrive account
+b) Business
+p) Personal
+b/p&gt; p  #这里选择个人版，你想挂载Business就选择b
+If your browser doesn't open automatically go to the following link: http://127.
+0.0.1:53682/auth  #接下来会弹出浏览器，要求你登录账号进行授权
+Log in and authorize rclone for access
+Waiting for code...
+Got code
+Paste the following into your remote machine ---&gt;
+{&quot;access_token&quot;:&quot;xxxx&quot;}  #请复制{xx}整个内容，后面需要用到
+&lt;---End paste
+</code></pre>
+<h2 id="安装rclone">安装rclone</h2>
+<p>本教程只适用<code>Debian</code>/<code>Ubuntu</code>系统，如果你是<code>CentOS</code>，请参考：https://rclone.org/install/，安装<code>rclone</code>。挂载方法和下面差不多。</p>
+<p><strong>1、安装rclone</strong></p>
+<pre><code class="language-powershell">wget https://www.moerats.com/usr/shell/rclone_debian.sh &amp;&amp; sudo bash rclone_debian.sh
+</code></pre>
+<p><strong>2、初始化配置</strong></p>
+<pre><code class="language-powershell">rclone config
+</code></pre>
+<p>会出现以下信息：</p>
+<pre><code class="language-powershell">No remotes found - make a new one
+n) New remote
+s) Set configuration password
+q) Quit config
+n/s/q&gt; n 
+name&gt; Jeffrey
+Type of storage to configure.
+Enter a string value. Press Enter for the default (&quot;&quot;).
+Choose a number from below, or type in your own value
+ 1 / 1Fichier
+   \ &quot;fichier&quot;
+ 2 / Alias for an existing remote
+   \ &quot;alias&quot;
+ 3 / Amazon Drive
+   \ &quot;amazon cloud drive&quot;
+ 4 / Amazon S3 Compliant Storage Provider (AWS, Alibaba, Ceph, Digital Ocean, Dreamhost, IBM COS, Minio, etc)
+   \ &quot;s3&quot;
+ 5 / Backblaze B2
+   \ &quot;b2&quot;
+ 6 / Box
+   \ &quot;box&quot;
+ 7 / Cache a remote
+   \ &quot;cache&quot;
+ 8 / Citrix Sharefile
+   \ &quot;sharefile&quot;
+ 9 / Dropbox
+   \ &quot;dropbox&quot;
+10 / Encrypt/Decrypt a remote
+   \ &quot;crypt&quot;
+11 / FTP Connection
+   \ &quot;ftp&quot;
+12 / Google Cloud Storage (this is not Google Drive)
+   \ &quot;google cloud storage&quot;
+13 / Google Drive
+   \ &quot;drive&quot;
+14 / Google Photos
+   \ &quot;google photos&quot;
+15 / Hubic
+   \ &quot;hubic&quot;
+16 / In memory object storage system.
+   \ &quot;memory&quot;
+17 / JottaCloud
+   \ &quot;jottacloud&quot;
+18 / Koofr
+   \ &quot;koofr&quot;
+19 / Local Disk
+   \ &quot;local&quot;
+20 / Mail.ru Cloud
+   \ &quot;mailru&quot;
+21 / Mega
+   \ &quot;mega&quot;
+22 / Microsoft Azure Blob Storage
+   \ &quot;azureblob&quot;
+23 / Microsoft OneDrive
+   \ &quot;onedrive&quot;
+24 / OpenDrive
+   \ &quot;opendrive&quot;
+25 / Openstack Swift (Rackspace Cloud Files, Memset Memstore, OVH)
+   \ &quot;swift&quot;
+26 / Pcloud
+   \ &quot;pcloud&quot;
+27 / Put.io
+   \ &quot;putio&quot;
+28 / QingCloud Object Storage
+   \ &quot;qingstor&quot;
+29 / SSH/SFTP Connection
+   \ &quot;sftp&quot;
+30 / Sugarsync
+   \ &quot;sugarsync&quot;
+31 / Transparently chunk/split large files
+   \ &quot;chunker&quot;
+32 / Union merges the contents of several remotes
+   \ &quot;union&quot;
+33 / Webdav
+   \ &quot;webdav&quot;
+34 / Yandex Disk
+   \ &quot;yandex&quot;
+35 / http Connection
+   \ &quot;http&quot;
+36 / premiumize.me
+   \ &quot;premiumizeme&quot;
+Storage&gt; 23
+** See help for onedrive backend at: https://rclone.org/onedrive/ **
+
+Microsoft App Client Id
+Leave blank normally.
+Enter a string value. Press Enter for the default (&quot;&quot;).
+client_id&gt; 
+Microsoft App Client Secret
+Leave blank normally.
+Enter a string value. Press Enter for the default (&quot;&quot;).
+client_secret&gt; 
+Edit advanced config? (y/n)
+y) Yes
+n) No (default)
+y/n&gt; y
+Chunk size to upload files with - must be multiple of 320k (327,680 bytes).
+
+Above this size files will be chunked - must be multiple of 320k (327,680 bytes). Note
+that the chunks will be buffered into memory.
+Enter a size with suffix k,M,G,T. Press Enter for the default (&quot;10M&quot;).
+chunk_size&gt; 
+The ID of the drive to use
+Enter a string value. Press Enter for the default (&quot;&quot;).
+drive_id&gt; 
+The type of the drive ( personal | business | documentLibrary )
+Enter a string value. Press Enter for the default (&quot;&quot;).
+drive_type&gt; personal
+Set to make OneNote files show up in directory listings.
+
+By default rclone will hide OneNote files in directory listings because
+operations like &quot;Open&quot; and &quot;Update&quot; won't work on them.  But this
+behaviour may also prevent you from deleting them.  If you want to
+delete OneNote files or otherwise want them to show up in directory
+listing, set this option.
+Enter a boolean value (true or false). Press Enter for the default (&quot;false&quot;).
+expose_onenote_files&gt;      
+This sets the encoding for the backend.
+
+See: the [encoding section in the overview](/overview/#encoding) for more info.
+Enter a encoder.MultiEncoder value. Press Enter for the default (&quot;Slash,LtGt,DoubleQuote,Colon,Question,Asterisk,Pipe,Hash,Percent,BackSlash,Del,Ctl,LeftSpace,LeftTilde,RightSpace,RightPeriod,InvalidUtf8,Dot&quot;).
+encoding&gt; 
+Remote config
+Use auto config?
+ * Say Y if not sure
+ * Say N if you are working on a remote or headless machine
+y) Yes (default)
+n) No
+y/n&gt; y
+If your browser doesn't open automatically go to the following link: http://127.0.0.1:53682/auth?state=PSYzRAWNo1amAAIH8lsJTg
+Log in and authorize rclone for access
+Waiting for code...
+Got code
+Choose a number from below, or type in an existing value
+ 1 / OneDrive Personal or Business
+   \ &quot;onedrive&quot;
+ 2 / Root Sharepoint site
+   \ &quot;sharepoint&quot;
+ 3 / Type in driveID
+   \ &quot;driveid&quot;
+ 4 / Type in SiteID
+   \ &quot;siteid&quot;
+ 5 / Search a Sharepoint site
+   \ &quot;search&quot;
+Your choice&gt; 1
+Found 1 drives, please select the one you want to use:
+0:  (personal) id=e70adde4ea6cdb91
+Chose drive to use:&gt; 0
+Found drive 'root' of type 'personal', URL: https://onedrive.live.com/?cid=e70adde4ea6cdb91
+Is that okay?
+y) Yes (default)
+n) No
+y/n&gt; y
+--------------------
+[Jeffrey]
+type = onedrive
+drive_type = personal
+token = {&quot;access_token&quot;:&quot;EwCIA8l6BAAUO9chh8cJscQLmU+LSWpbnr0vmwwAAYDBp487ZwYofuxRGSP8mvh84WU8t/5/fmuumkE8zmgNddKKO254DAwHxsBA097ZouODrsXeaRs6Iwjk0It99TX3qlGDqpiKinLPHbx3OPEwM8wgn46x0kGD3pWIaordpXOIJHHpLA1VuJ7dnviN9EDS5n/BOSMsC12otSRwWHflBBDKSDMAV/na9egzzyE2mFOjQ00iLpls9FxqKBe9PRs5qRKM0aRE++gL7NPmFsRWNyNvXZbTR18LcvMeI5RkMIKMkJxX/FUzmXqiPYFizP03d1gC1f5tyizAJltUQrykHNYQkxL1ngwHqzayysyzi2cyLZKMmfiD8xfIs0gNBXMDZgAACGilyKHj2zHTWAKUtwLX/IRTIKlg3TxDfCcOlulsLRWFogZU4yamwuhNaZ3oWfEEp1lnR6slFuLnklivIeW9OLdELC7oyXnaXDXwExt5CnCxJKTMP7orzefiqOKtKpRe/34cOTtmEU8LGvZDwH9Ex5TOrh5zqJq8ul9hVRw6c+VuHUoJgQwHXF}
+drive_id = e70adde4ea6cdb91
+--------------------
+y) Yes this is OK (default)
+e) Edit this remote
+d) Delete this remote
+y/e/d&gt; y
+Current remotes:
+
+Name                 Type
+====                 ====
+Jeffrey              onedrive
+
+e) Edit existing remote
+n) New remote
+d) Delete remote
+r) Rename remote
+c) Copy remote
+s) Set configuration password
+q) Quit config
+e/n/d/r/c/s/q&gt; q
+</code></pre>
+<h2 id="挂载">挂载</h2>
+<p><strong>1、挂载为磁盘</strong></p>
+<pre><code class="language-powershell">#新建本地文件夹，路径自己定，即下面的LocalFolder
+mkdir /home/ubuntu/data/OneDrive
+#挂载为磁盘，下面的DriveName、Folder、LocalFolder参数根据说明自行替换
+sudo rclone mount Jeffrey:/drxlchan /home/ubuntu/data/OneDrive --copy-links --no-gzip-encoding --no-check-certificate --allow-other --allow-non-empty --umask 000
+</code></pre>
+<p><code>DriveName</code>为初始化配置填的<code>name</code>，<code>Folder</code>为<code>OneDrive</code>里的文件夹，<code>LocalFolder</code>为<code>VPS</code>上的本地文件夹。</p>
+<p>如果挂载过程中出现<code>NOTICE: One drive root 'test': poll-interval is not supported by this remote</code>错误，可以无视该错误。</p>
+<p>挂载成功后，输入<code>df -h</code>命令查看即可！<br>
+<a href="https://www.moerats.com/usr/picture/rclone_OD.png"><img src="data:image/png;base64,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" alt="请输入图片描述" loading="lazy"></a></p>
+<p><strong>2、卸载磁盘</strong></p>
+<pre><code class="language-powershell">fusermount -qzu /home/ubuntu/data/OneDrive
+</code></pre>
+<h2 id="开机自启">开机自启</h2>
+<p>先新建<code>systemd</code>配置文件，适用<code>CentOS 7</code>、<code>Debian 8+</code>、<code>Ubuntu 16+</code>。</p>
+<p>再使用命令：</p>
+<pre><code class="language-powershell">#将后面修改成你上面手动运行命令中，除了rclone的全部参数
+command=&quot;mount Jeffrey:/drxlchan /home/ubuntu/data/OneDrive --copy-links --no-gzip-encoding --no-check-certificate --allow-other --allow-non-empty --umask 000&quot;
+#以下是一整条命令，一起复制到SSH客户端运行
+sudo cat &gt; /etc/systemd/system/rclone.service &lt;&lt;EOF
+[Unit]
+Description=Rclone
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=$(command -v rclone) ${command}
+Restart=on-abort
+User=root
+
+[Install]
+WantedBy=default.target
+EOF
+</code></pre>
+<p>开始启动：</p>
+<pre><code class="language-powershell">systemctl start rclone
+</code></pre>
+<p>设置开机自启：</p>
+<pre><code class="language-powershell">systemctl enable rclone
+</code></pre>
+<p>其他命令：</p>
+<pre><code class="language-powershell">重启：systemctl restart rclone
+停止：systemctl stop rclone
+状态：systemctl status rclone
+</code></pre>
+<p>如果你想挂载多个网盘，那么将<code>systemd</code>配置文件的<code>rclone.service</code>改成<code>rclone1.service</code>即可，重启动什么的同样换成<code>rclone1</code>。</p>
+
+              </div>
+              <div class="post-footer">
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      Jeffrey X.L. Chan
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://drxlchan.github.io/vWFOyOWOp/" title="在Ubuntu上使用rclone挂载OneDrive网盘">在Ubuntu上使用rclone挂载OneDrive网盘</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，转载请注明出处！
+    </li>
+  </ul>
+  <div class="tags">
+    
+      <a href="https://drxlchan.github.io/yE-Vsna4c/"># 平台搭建</a>
+    
+  </div>
+  <div class="nav">
+    <div class="nav-prev">
+      
+        <i class="fa fa-chevron-left"></i>
+        <a class="nav-pc-next" title="PyCharm配置远程python解释器" href="https://drxlchan.github.io/R_koQ7Wln/">PyCharm配置远程python解释器</a class="nav-pc-next">
+        <a class="nav-mobile-prev" title="PyCharm配置远程python解释器" href="https://drxlchan.github.io/R_koQ7Wln/">上一篇</a>
+      
+    </div>
+    <div class="nav-next">
+      
+        <a class="nav-pc-next" title="Ubuntu强化学习平台搭建" href="https://drxlchan.github.io/kx2O4XRDq/">Ubuntu强化学习平台搭建</a>
+        <a class="nav-mobile-next" title="Ubuntu强化学习平台搭建" href="https://drxlchan.github.io/kx2O4XRDq/">下一篇</a>
+        <i class="fa fa-chevron-right"></i>
+      
+    </div>
+  </div>
+</div>
+              
+  
+    
+      <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '507d6537c02949fc9fcf',
+    clientSecret: 'd79b97c069578bdff893c6d912ad6019f4f6e43a',
+    repo: 'jeffrey28.github.io',
+    owner: 'jeffrey28',
+    admin: ['jeffrey28'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+    
+    
+  
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-box">
+  <footer class="footer">
+    <div class="copyright">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | © 2019-2020 Theme By <a href="https://github.com/hsxyhao/gridea-theme-next" target="_blank">HsxyHao</a>
+    </div>
+    <div class="poweredby">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+    </div>
+  </footer>
+  
+  
+    <div class="drawer-box right" id="drawer_box">
+      <span class="muse-line muse-line-first"></span>
+      <span class="muse-line muse-line-middle"></span>
+      <span class="muse-line muse-line-last"></span>
+    </div>
+  
+  <div class="mist back-to-top" id="back_to_top">
+    <i class="fa fa-arrow-up"></i>
+    
+  </div>
+  
+    <div class="bg-img">
+      <img src="http://raw.githubusercontent.com/Jeffrey28/Figurebed/master/img/20200413111822.jpg" />
+    </div>
+  
+  
+  
+</div>
+<script>
+
+  let sideBarOpen = 'sidebar-open';
+  let body = document.body;
+  let back2Top = document.querySelector('#back_to_top'),
+  back2TopText = document.querySelector('#back_to_top_text'),
+  drawerBox = document.querySelector('#drawer_box'),
+  rightSideBar = document.querySelector('.sidebar'),
+  viewport = document.querySelector('body');
+
+  function scrollAnimation(currentY, targetY) {
+   
+    let needScrollTop = targetY - currentY
+    let _currentY = currentY
+    setTimeout(() => {
+      const dist = Math.ceil(needScrollTop / 10)
+      _currentY += dist
+      window.scrollTo(_currentY, currentY)
+      if (needScrollTop > 10 || needScrollTop < -10) {
+        scrollAnimation(_currentY, targetY)
+      } else {
+        window.scrollTo(_currentY, targetY)
+      }
+    }, 1)
+  }
+
+  back2Top.addEventListener("click", function(e) {
+    scrollAnimation(document.scrollingElement.scrollTop, 0);
+    e.stopPropagation();
+    return false;
+  });
+  
+  window.addEventListener('scroll', function(e) {
+    let percent = document.scrollingElement.scrollTop / (document.scrollingElement.scrollHeight - document.scrollingElement.clientHeight) * 100;
+    if (percent > 1 && !back2Top.classList.contains('back-top-active')) {
+      back2Top.classList.add('back-top-active');
+    }
+    if (percent == 0) {
+      back2Top.classList.remove('back-top-active');
+    }
+    if (back2TopText) {
+      back2TopText.textContent = Math.floor(percent);
+    }
+  });
+
+  
+  let hasCacu = false;
+  window.onresize = function() {
+    if (window.width > 991) {
+      calcuHeight();
+    } else {
+      hasCacu = false;
+    }
+  }
+
+  function calcuHeight() {
+    // 动态调整站点概览高度
+    if (!hasCacu && back2Top.classList.contains('pisces') || back2Top.classList.contains('gemini')) {
+      let sideBar = document.querySelector('.sidebar');
+      let navUl = document.querySelector('#site_nav');
+      sideBar.style = 'margin-top:' + (navUl.offsetHeight + navUl.offsetTop + 15) + 'px;';
+      hasCacu = true;
+    }
+  }
+  calcuHeight();
+  
+  let open = false, MOTION_TIME = 300, RIGHT_MOVE_DIS = '320px';
+
+  if (drawerBox) {
+    let rightMotions = document.querySelectorAll('.right-motion');
+    let right = drawerBox.classList.contains('right');
+
+    let transitionDir = right ? "transition.slideRightIn" : "transition.slideLeftIn";
+
+    let openProp, closeProp;
+    if (right) {
+      openProp = {
+        paddingRight: RIGHT_MOVE_DIS 
+      };
+      closeProp = {
+        paddingRight: '0px'
+      };
+    } else {
+      openProp = {
+        paddingLeft: RIGHT_MOVE_DIS 
+      };
+      closeProp = {
+        paddingLeft: '0px'
+      };
+    }
+
+    drawerBox.onclick = function() {
+      open = !open;
+      window.Velocity(rightSideBar, 'stop');
+      window.Velocity(viewport, 'stop');
+      window.Velocity(rightMotions, 'stop');
+      if (open) {
+        window.Velocity(rightSideBar, {
+          width: RIGHT_MOVE_DIS
+        }, {
+          duration: MOTION_TIME,
+          begin: function() {
+            window.Velocity(rightMotions, transitionDir,{ });
+          }
+        })
+        window.Velocity(viewport, openProp,{
+          duration: MOTION_TIME
+        });
+      } else {
+        window.Velocity(rightSideBar, {
+          width: '0px'
+        }, {
+          duration: MOTION_TIME,
+          begin: function() {
+            window.Velocity(rightMotions, {
+              opacity: 0
+            });
+          }
+        })
+        window.Velocity(viewport, closeProp ,{
+          duration: MOTION_TIME
+        });
+      }
+      for (let i = 0; i < drawerBox.children.length; i++) {
+        drawerBox.children[i].classList.toggle('muse-line');
+      }
+      drawerBox.classList.toggle(sideBarOpen);
+    }
+  }
+
+  // 链接跳转
+  let newWindow = 'true'
+  if (newWindow === 'true') {
+    let links = document.querySelectorAll('.post-body a')
+    links.forEach(item => {
+      if (!item.classList.contains('btn')) {
+        item.setAttribute("target","_blank");
+      }
+    })
+  }
+  // 代码高亮
+  hljs.initHighlightingOnLoad();
+
+</script>
+      <div class="light-box" id="light_box"></div>
+<script>
+  let imgs = document.querySelectorAll('.post-body img');
+  let lightBox = document.querySelector('#light_box');
+  lightBox.addEventListener('mousedown', (e) => {
+    e.preventDefault()
+  })
+  lightBox.addEventListener('mousewheel', (e) => {
+    e.preventDefault()
+  })
+  let width = window.innerWidth * 0.8;
+  lightBox.onclick= () => {
+    let img = lightBox.querySelector('img');
+    lightBox.style = '';
+    img && img.remove();
+  }
+  imgs.forEach(item => {
+    item.onclick = function(e) {
+      let lightImg = document.createElement('img');
+      lightImg.src = this.src;
+      lightBox.style = `height: 100%; opacity: 1; background-color: rgba(0, 0, 0, 0.5);cursor: zoom-out;`;
+      lightImg.style = `width: ${width}px; border: 1px solid #fff; border-radius: 2px;`;
+      lightImg.onclick = function() {
+        lightBox.style = '';
+        this.remove();
+      }
+      lightBox.append(lightImg);
+    }
+  })
+</script>
+    </div>
+  </body>
+  <script src="/media/js/motion.js"></script>
+</html>
